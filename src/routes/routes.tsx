@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom"
 import App from "../App"
 import NotFoundPage from "../pages/NotFoundPage"
 import DashboardPage from "../pages/DashboardPage"
+import { UserListPage } from "../pages/UserListPage"
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <DashboardPage />,
+      },
+      {
+        path: "/users",
+        element: <UserListPage />,
       },
     ],
   },
