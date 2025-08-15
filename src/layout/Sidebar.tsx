@@ -29,8 +29,8 @@ const navigationItems = [
     icon: Users,
   },
   {
-    title: "Transition",
-    href: "/transition",
+    title: "Transaction",
+    href: "/transaction",
     icon: DollarSign,
   },
 ];

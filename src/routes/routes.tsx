@@ -4,6 +4,7 @@ import App from "../App"
 import NotFoundPage from "../pages/NotFoundPage"
 import DashboardPage from "../pages/DashboardPage"
 import { UserListPage } from "../pages/UserListPage"
+import { TransactionPage } from "../pages/Transaction"
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <UserListPage />,
+      },
+      {
+        path: "/transaction",
+        element: <TransactionPage />,
       },
     ],
   },
