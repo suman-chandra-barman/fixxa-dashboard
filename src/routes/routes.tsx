@@ -9,6 +9,7 @@ import { PersonalInformationPage } from "../pages/PersonalInformationPage";
 import { ChangePasswordPage } from "../pages/ChangePasswordPage";
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
 import EditPrivacyPolicyPage from "../pages/EditPrivacyPolicyPage";
+import SignInPage from "../pages/SigninPage";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+    {
+        path: "/signin",
+        element: <SignInPage />,
+      },
 ]);
 
 export default router;
