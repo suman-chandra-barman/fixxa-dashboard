@@ -1,13 +1,14 @@
-
-import { createBrowserRouter } from "react-router-dom"
-import App from "../App"
-import NotFoundPage from "../pages/NotFoundPage"
-import DashboardPage from "../pages/DashboardPage"
-import { UserListPage } from "../pages/UserListPage"
-import { TransactionPage } from "../pages/Transaction"
-import SettingsPage from "../pages/Settings"
-import { PersonalInformationPage } from "../pages/PersonalInformationPage"
-import { ChangePasswordPage } from "../pages/ChangePasswordPage"
+import { createBrowserRouter } from "react-router-dom";
+import App from "../App";
+import NotFoundPage from "../pages/NotFoundPage";
+import DashboardPage from "../pages/DashboardPage";
+import { UserListPage } from "../pages/UserListPage";
+import { TransactionPage } from "../pages/Transaction";
+import SettingsPage from "../pages/Settings";
+import { PersonalInformationPage } from "../pages/PersonalInformationPage";
+import { ChangePasswordPage } from "../pages/ChangePasswordPage";
+import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
+import EditPrivacyPolicyPage from "../pages/EditPrivacyPolicyPage";
 
 const router = createBrowserRouter([
   {
@@ -39,8 +40,16 @@ const router = createBrowserRouter([
         path: "/settings/change-password",
         element: <ChangePasswordPage />,
       },
+      {
+        path: "/settings/privacy-policy",
+        element: <PrivacyPolicyPage />,
+      },
+      {
+        path: "/settings/privacy-policy/edit",
+        element: <EditPrivacyPolicyPage />,
+      },
     ],
   },
-])
+]);
 
-export default router
+export default router;

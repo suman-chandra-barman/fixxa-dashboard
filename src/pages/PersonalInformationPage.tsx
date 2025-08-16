@@ -85,7 +85,7 @@ export function PersonalInformationPage() {
           </p>
         </div>
       </div>
-      
+
       <div className="w-full px-20">
         <div className="bg-white rounded-2xl shadow-sm border p-8">
           {/* Profile Image */}
@@ -183,7 +183,7 @@ export function PersonalInformationPage() {
             <div className="w-full text-center">
               <Button
                 type="submit"
-                className="h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-2xl font-medium"
+                className="h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-full font-medium px-8"
                 disabled={isLoading}
               >
                 {isLoading ? "Updating..." : "Save Changes"}

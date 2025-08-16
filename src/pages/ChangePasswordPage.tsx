@@ -206,7 +206,7 @@ export function ChangePasswordPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium"
+              className="w-full h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-full font-medium px-8"
               disabled={isLoading}
             >
               {isLoading ? "Saving changes..." : "Save changes"}
