@@ -176,19 +176,16 @@ const SignInPage: React.FC = () => {
 
             {/* Forgot Password */}
             <div className="text-right">
-              <button
-                type="button"
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
-              >
+              <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
                 Forgot password?
-              </button>
+              </Link>
             </div>
 
             {/* Continue Button */}
             <button
               type="button"
               onClick={handleSubmit(onSubmit)}
-              className="w-full bg-gray-400 hover:bg-gray-500 text-white font-medium py-4 rounded-lg transition-colors duration-200"
+              className="w-full rounded-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-4 transition-colors duration-200"
             >
               {loading ? "Signing in..." : "Continue"}
             </button>

@@ -10,6 +10,8 @@ import { ChangePasswordPage } from "../pages/ChangePasswordPage";
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
 import EditPrivacyPolicyPage from "../pages/EditPrivacyPolicyPage";
 import SignInPage from "../pages/SigninPage";
+import ForgotPasswordPage from "../pages/PorgotPasswordPage";
+import { ResetPasswordPage } from "../pages/ResetPasswordPage";
 
 const router = createBrowserRouter([
   {
@@ -51,10 +53,18 @@ const router = createBrowserRouter([
       },
     ],
   },
-    {
-        path: "/signin",
-        element: <SignInPage />,
-      },
+  {
+    path: "/signin",
+    element: <SignInPage />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
+  },
 ]);
 
 export default router;
