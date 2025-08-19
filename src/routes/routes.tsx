@@ -9,9 +9,10 @@ import { PersonalInformationPage } from "../pages/PersonalInformationPage";
 import { ChangePasswordPage } from "../pages/ChangePasswordPage";
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
 import EditPrivacyPolicyPage from "../pages/EditPrivacyPolicyPage";
-import SignInPage from "../pages/SigninPage";
-import ForgotPasswordPage from "../pages/PorgotPasswordPage";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "../pages/ResetPasswordPage";
+import OTPVerificationPage from "../pages/VerifyOTPPage";
+import SigninPage from "../pages/SignInPage";
 
 const router = createBrowserRouter([
   {
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/signin",
-    element: <SignInPage />,
+    element: <SigninPage />,
   },
   {
     path: "/forgot-password",
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPasswordPage />,
+  },
+  {
+    path: "/verify-otp",
+    element: <OTPVerificationPage />,
   },
 ]);
 

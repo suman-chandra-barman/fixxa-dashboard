@@ -46,6 +46,8 @@ export function ResetPasswordPage() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      console.log("Reset Password Data:", data);
+
       toast.success("Password Reset Successful", {
         description:
           "Your password has been successfully reset. You can now login with your new password.",

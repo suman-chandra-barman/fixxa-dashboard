@@ -1,54 +1,51 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type { SubmitHandler } from "react-hook-form";
-import { Mail, Lock, X, Eye, EyeOff } from "lucide-react";
-import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import logo from "../assets/logo.png";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../components/ui/form";
 import { Link } from "react-router-dom";
 
-interface IFormInput {
-  email: string;
-  password: string;
-}
+const signinSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
-const SignInPage: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<IFormInput>();
-  const [focusedField, setFocusedField] = useState<string>("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [emailValue, setEmailValue] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+type SigninFormData = z.infer<typeof signinSchema>;
 
-  const passwordValue = watch("password");
+export default function SigninPage() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setLoading(true); // Show loading state when form is submitted
+  const form = useForm<SigninFormData>({
+    resolver: zodResolver(signinSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
+  const onSubmit = async (data: SigninFormData) => {
+    setIsLoading(true);
     try {
-      // Simulate a login request (replace this with actual API call)
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay to simulate request
-
-      // After successful login
-      setLoading(false);
-      toast.success("Login successful!");
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("Signin data:", data);
+      // Handle successful signin here
     } catch (error) {
-      setLoading(false);
-      toast.error("Something went wrong. Please try again.");
+      console.error("Signin error:", error);
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const clearEmail = () => {
-    setEmailValue("");
-    setValue("email", "");
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   };
 
   return (
@@ -56,148 +53,111 @@ const SignInPage: React.FC = () => {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
           {/* Logo */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">
             <div className="flex justify-center">
-              <img
-                src={logo}
-                alt="PIXXA Logo"
-                className="h-12 w-auto"
-              />
+              <img src={logo} alt="Logo" className="h-12 w-auto" />
             </div>
-            <h1 className="text-xl font-medium text-gray-900">Welcome back!</h1>
+          </div>
+
+          {/* Welcome Text */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Welcome back!
+            </h1>
           </div>
 
           {/* Form */}
-          <div className="space-y-6">
-            {/* Email Field */}
-            <div className="relative">
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
-                <input
-                  id="email"
-                  type="email"
-                  value={emailValue}
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: {
-                      value: /^\S+@\S+$/i,
-                      message: "Invalid email address",
-                    },
-                  })}
-                  onChange={(e) => {
-                    setEmailValue(e.target.value);
-                    setValue("email", e.target.value);
-                  }}
-                  className={`w-full pl-12 pr-10 py-4 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
-                    focusedField === "email" || emailValue
-                      ? "border-blue-500 focus:ring-blue-200"
-                      : "border-gray-300 focus:ring-blue-200"
-                  }`}
-                  onFocus={() => setFocusedField("email")}
-                  onBlur={() => setFocusedField("")}
-                />
-                {emailValue && (
-                  <button
-                    type="button"
-                    onClick={clearEmail}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Email Field */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="Email"
+                          className="pl-10 h-12 border-gray-300 rounded-lg"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </div>
-              <label
-                htmlFor="email"
-                className={`absolute left-12 transition-all duration-200 pointer-events-none ${
-                  focusedField === "email" || emailValue
-                    ? "top-2 text-xs text-blue-600 font-medium"
-                    : "top-1/2 transform -translate-y-1/2 text-gray-500"
-                }`}
-              >
-                Email
-              </label>
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+              />
 
-            {/* Password Field */}
-            <div className="relative">
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 6,
-                      message: "Password must be at least 6 characters",
-                    },
-                  })}
-                  className={`w-full pl-12 pr-12 py-4 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
-                    focusedField === "password" || passwordValue
-                      ? "border-blue-500 focus:ring-blue-200"
-                      : "border-gray-300 focus:ring-blue-200"
-                  }`}
-                  onFocus={() => setFocusedField("password")}
-                  onBlur={() => setFocusedField("")}
-                />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              {/* Password Field */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          className="pl-10 pr-10 h-12 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Forgot Password Link */}
+              <div className="text-right">
+                <Link
+                  to="/forgot-password"
+                  className="text-blue-500 hover:text-blue-600 text-sm font-medium"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
+                  Forgot password?
+                </Link>
               </div>
-              <label
-                htmlFor="password"
-                className={`absolute left-12 transition-all duration-200 pointer-events-none ${
-                  focusedField === "password" || passwordValue
-                    ? "top-2 text-xs text-blue-600 font-medium"
-                    : "top-1/2 transform -translate-y-1/2 text-gray-500"
-                }`}
+
+              {/* Continue Button */}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-full"
               >
-                Password
-              </label>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-
-            {/* Forgot Password */}
-            <div className="text-right">
-              <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-                Forgot password?
-              </Link>
-            </div>
-
-            {/* Continue Button */}
-            <button
-              type="button"
-              onClick={handleSubmit(onSubmit)}
-              className="w-full rounded-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-4 transition-colors duration-200"
-            >
-              {loading ? "Signing in..." : "Continue"}
-            </button>
-          </div>
+                {isLoading ? "Signing in..." : "Continue"}
+              </Button>
+            </form>
+          </Form>
 
           {/* Footer Links */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <div className="flex justify-center space-x-6 text-sm">
-              <Link to="/settings/terms-conditions" className="text-blue-600 hover:text-blue-700 transition-colors">
+              <Link
+                to="/settings/terms-conditions"
+                className="text-blue-600 hover:text-blue-700 transition-colors"
+              >
                 Terms of Use
               </Link>
-              <Link to="/settings/privacy-policy" className="text-blue-600 hover:text-blue-700 transition-colors">
+              <Link
+                to="/settings/privacy-policy"
+                className="text-blue-600 hover:text-blue-700 transition-colors"
+              >
                 Privacy Policy
               </Link>
             </div>
@@ -206,6 +166,4 @@ const SignInPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default SignInPage;
+}
