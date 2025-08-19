@@ -1,21 +1,24 @@
 import React from "react";
-import { Search, Bell } from "lucide-react";
-import { Input } from "../components/ui/input";
+import { Bell } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
-import {  Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../components/ui/tooltip";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   return (
     <header className="h-[100px] border-b border-gray-200 bg-background px-6 flex items-center justify-between">
       {/* Search */}
       <div className="flex-1 max-w-lg">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search product..."
-            className="pl-10 bg-background border-gray-200"
-          />
+        <div className="">
+          <p className="text-lg font-semibold text-gray-800">
+            Welcome, <span>Guy Hawkins</span>!
+          </p>
         </div>
       </div>
 
@@ -29,14 +32,19 @@ const Header: React.FC = () => {
         </Button>
 
         <div className="flex items-center gap-3 border-l-2 border-gray-200 pl-4">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&fit=crop" />
-            <AvatarFallback>GH</AvatarFallback>
-          </Avatar>
-          <div>
-            <span className="font-medium">Guy Hawkins</span>
-            <p className="text-sm text-muted-foreground">Admin</p>
-          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/settings">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&fit=crop" />
+                  <AvatarFallback>GH</AvatarFallback>
+                </Avatar>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Settings</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </header>
