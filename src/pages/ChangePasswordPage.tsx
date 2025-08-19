@@ -40,6 +40,8 @@ export function ChangePasswordPage() {
   };
 
   const onSubmit = async (data: ChangePasswordForm) => {
+
+    console.log("Change Password Form Submitted:", data);
     setIsLoading(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));

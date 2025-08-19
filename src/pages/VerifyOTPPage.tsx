@@ -218,7 +218,7 @@ const OTPVerificationPage: React.FC<OTPVerificationPageProps> = ({
                   onChange={(e) => handleOTPChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className="w-12 h-12 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg font-medium transition-colors"
+                  className="w-12 h-12 text-center border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg font-medium transition-colors"
                   autoComplete="off"
                 />
               ))}

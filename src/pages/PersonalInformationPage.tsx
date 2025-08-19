@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -24,17 +24,33 @@ export function PersonalInformationPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
+  const defaultValues = useMemo(
+    () => ({
+      name: "Steve Moss",
+      email: "richardomathew@gmail.com",
+      phone: "01764637854",
+    }),
+    []
+  );
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
+    setValue,
+    watch,
   } = useForm<PersonalInfoForm>({
-    defaultValues: {
-      name: "Steve Moss",
-      email: "richardomathew@gmail.com",
-      phone: "017646378549",
-    },
+    defaultValues,
+    mode: "onBlur", // Validate on blur to avoid immediate errors
+    criteriaMode: "all",
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [reset, defaultValues]);
+
+  const phoneValue = watch("phone");
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -47,12 +63,30 @@ export function PersonalInformationPage() {
     }
   };
 
+  // const onSubmit = async (data: PersonalInfoForm) => {
+
   const onSubmit = async (data: PersonalInfoForm) => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    setShowSuccess(true);
+    console.log("Personal Information Form Submitted:", data);
+    try {
+      setIsLoading(true);
+      console.log("Submitting data:", data);
+      console.log("Phone value during submit:", phoneValue); // Debug log
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      reset({
+        ...data,
+        email: defaultValues.email, // Keep email unchanged
+      });
+      setValue("phone", data.phone); // Ensure phone is updated
+
+      setShowSuccess(true);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBack = () => {
@@ -124,13 +158,20 @@ export function PersonalInformationPage() {
                   <User className="h-5 w-5 text-gray-400" />
                 </div>
                 <Input
-                  {...register("name", { required: "Name is required" })}
+                  {...register("name", {
+                    required: "Name is required",
+                    validate: (value) => {
+                      console.log("Name value being validated:", value);
+                      const trimmedValue = value.trim();
+                      return trimmedValue.length < 2
+                        ? "Name must be at least 2 characters"
+                        : true;
+                    },
+                  })}
+                  defaultValue={defaultValues.name}
+                  type="text"
                   placeholder="Name"
-                  className={`pl-12 h-12 rounded-xl border-2 ${
-                    errors.name
-                      ? "border-red-300 focus:border-red-500"
-                      : "border-gray-200 focus:border-blue-500"
-                  } focus:ring-0`}
+                  className={`pl-12 h-12 rounded-lg border-2`}
                 />
               </div>
               {errors.name && (
@@ -149,13 +190,13 @@ export function PersonalInformationPage() {
                 <Input
                   {...register("email")}
                   placeholder="Email"
-                  className="pl-12 h-12 rounded-xl border-2 border-gray-200 bg-gray-50 cursor-not-allowed"
+                  className="pl-12 h-12 rounded-lg border-2 border-gray-200 bg-gray-50 cursor-not-allowed"
                   readOnly
+                  value={defaultValues.email}
                 />
               </div>
             </div>
 
-            {/* Phone Field */}
             <div className="space-y-2">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
@@ -164,27 +205,30 @@ export function PersonalInformationPage() {
                 <Input
                   {...register("phone", {
                     required: "Phone number is required",
+                    validate: (value) => {
+                      const trimmedValue = value.trim();
+                      console.log("Phone value being validated:", trimmedValue); // Debug log
+                      return trimmedValue.length === 0
+                        ? "Phone number is required"
+                        : !/^[0-9]{11}$/.test(trimmedValue)
+                        ? "Please enter a valid 11-digit phone number"
+                        : true;
+                    },
                   })}
+                  defaultValue={defaultValues.phone}
+                  type="tel"
                   placeholder="Phone"
-                  className={`pl-12 h-12 rounded-xl border-2 ${
-                    errors.phone
-                      ? "border-red-300 focus:border-red-500"
-                      : "border-gray-200 focus:border-blue-500"
-                  } focus:ring-0`}
+                  className={`pl-12 h-12 rounded-lg border-2 ${
+                    errors.phone ? "border-red-500" : "border-gray-200"
+                  }`}
                 />
               </div>
-              {errors.phone && (
-                <p className="text-sm text-red-500 ml-1">
-                  {errors.phone.message}
-                </p>
-              )}
             </div>
 
             <div className="w-full text-center">
               <Button
                 type="submit"
                 className="h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-full font-medium px-8"
-                disabled={isLoading}
               >
                 {isLoading ? "Updating..." : "Save Changes"}
               </Button>

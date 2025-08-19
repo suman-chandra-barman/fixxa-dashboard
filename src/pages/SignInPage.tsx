@@ -82,7 +82,7 @@ export default function SigninPage() {
                           {...field}
                           type="email"
                           placeholder="Email"
-                          className="pl-10 h-12 border-gray-300 rounded-lg"
+                          className="pl-10 h-12 border-gray-300 rounded-lg border-2"
                         />
                       </div>
                     </FormControl>
@@ -104,7 +104,7 @@ export default function SigninPage() {
                           {...field}
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
-                          className="pl-10 pr-10 h-12 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          className="pl-10 pr-10 h-12 border-gray-300 rounded-lg border-2"
                         />
                         <button
                           type="button"

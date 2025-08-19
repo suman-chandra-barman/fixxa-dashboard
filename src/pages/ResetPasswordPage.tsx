@@ -101,7 +101,7 @@ export function ResetPasswordPage() {
                           {...field}
                           type={showNewPassword ? "text" : "password"}
                           placeholder="Enter new password"
-                          className="pl-10 pr-10 bg-gray-50 border-gray-200 rounded-xl h-12"
+                          className="pl-10 pr-10 bg-gray-50 border-gray-200 rounded-lg h-12 border-2"
                         />
                         <Button
                           type="button"
@@ -138,7 +138,7 @@ export function ResetPasswordPage() {
                           {...field}
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="Confirm new password"
-                          className="pl-10 pr-10 bg-gray-50 border-gray-200 rounded-xl h-12"
+                          className="pl-10 pr-10 bg-gray-50 border-gray-200 rounded-lg h-12 border-2"
                         />
                         <Button
                           type="button"
