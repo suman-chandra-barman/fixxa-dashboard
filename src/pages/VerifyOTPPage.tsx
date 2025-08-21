@@ -121,13 +121,12 @@ const OTPVerificationPage: React.FC<OTPVerificationPageProps> = ({
 
     try {
       setIsVerifying(true);
-
+      console.log("OTP Verified:", otpString);
       // Simulate API call for OTP verification
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Simulate OTP validation (replace with actual API call)
       if (otpString === "123456") {
-        console.log("OTP Verified:", otpString);
         // Mock valid OTP
         toast.success("OTP Verified Successfully", {
           description: "You can now reset your password.",

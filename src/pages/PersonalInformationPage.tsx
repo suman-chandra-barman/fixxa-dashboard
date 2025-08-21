@@ -1,12 +1,29 @@
 import type React from "react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { ArrowLeft, User, Mail, Phone, Camera } from "lucide-react";
 import { SuccessDialog } from "../components/modal/SuccessDailog";
 import { useNavigate } from "react-router-dom";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../components/ui/form";
+
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email"),
+  phone: z
+    .string()
+    .regex(/^[0-9]{11}$/, "Please enter a valid 11-digit phone number"),
+});
 
 interface PersonalInfoForm {
   name: string;
@@ -33,24 +50,15 @@ export function PersonalInformationPage() {
     []
   );
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    setValue,
-    watch,
-  } = useForm<PersonalInfoForm>({
+  const form = useForm<PersonalInfoForm>({
+    resolver: zodResolver(formSchema),
     defaultValues,
-    mode: "onBlur", // Validate on blur to avoid immediate errors
-    criteriaMode: "all",
+    mode: "onBlur",
   });
 
   useEffect(() => {
-    reset(defaultValues);
-  }, [reset, defaultValues]);
-
-  const phoneValue = watch("phone");
+    form.reset(defaultValues);
+  }, [form, defaultValues]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -63,23 +71,16 @@ export function PersonalInformationPage() {
     }
   };
 
-  // const onSubmit = async (data: PersonalInfoForm) => {
-
   const onSubmit = async (data: PersonalInfoForm) => {
     console.log("Personal Information Form Submitted:", data);
     try {
       setIsLoading(true);
       console.log("Submitting data:", data);
-      console.log("Phone value during submit:", phoneValue); // Debug log
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      reset({
-        ...data,
-        email: defaultValues.email, // Keep email unchanged
-      });
-      setValue("phone", data.phone); // Ensure phone is updated
+      form.reset(data);
 
       setShowSuccess(true);
     } catch (error) {
@@ -150,90 +151,100 @@ export function PersonalInformationPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-10">
-            {/* Name Field */}
-            <div className="space-y-2">
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
-                <Input
-                  {...register("name", {
-                    required: "Name is required",
-                    validate: (value) => {
-                      console.log("Name value being validated:", value);
-                      const trimmedValue = value.trim();
-                      return trimmedValue.length < 2
-                        ? "Name must be at least 2 characters"
-                        : true;
-                    },
-                  })}
-                  defaultValue={defaultValues.name}
-                  type="text"
-                  placeholder="Name"
-                  className={`pl-12 h-12 rounded-lg border-2`}
-                />
-              </div>
-              {errors.name && (
-                <p className="text-sm text-red-500 ml-1">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 mt-10"
+            >
+              {/* Name Field */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <User className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            {...field}
+                            type="text"
+                            placeholder="Name"
+                            className="pl-12 h-12 rounded-lg border-2 border-gray-200"
+                          />
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Email Field - Read Only */}
-            <div className="space-y-2">
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
-                <Input
-                  {...register("email")}
-                  placeholder="Email"
-                  className="pl-12 h-12 rounded-lg border-2 border-gray-200 bg-gray-50 cursor-not-allowed"
-                  readOnly
-                  value={defaultValues.email}
-                />
-              </div>
-            </div>
+              {/* Email Field - Read Only */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <Mail className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            {...field}
+                            placeholder="Email"
+                            className="pl-12 h-12 rounded-lg border-2 border-gray-200 bg-gray-50 cursor-not-allowed"
+                            readOnly
+                          />
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-2">
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                  <Phone className="h-5 w-5 text-gray-400" />
-                </div>
-                <Input
-                  {...register("phone", {
-                    required: "Phone number is required",
-                    validate: (value) => {
-                      const trimmedValue = value.trim();
-                      console.log("Phone value being validated:", trimmedValue); // Debug log
-                      return trimmedValue.length === 0
-                        ? "Phone number is required"
-                        : !/^[0-9]{11}$/.test(trimmedValue)
-                        ? "Please enter a valid 11-digit phone number"
-                        : true;
-                    },
-                  })}
-                  defaultValue={defaultValues.phone}
-                  type="tel"
-                  placeholder="Phone"
-                  className={`pl-12 h-12 rounded-lg border-2 ${
-                    errors.phone ? "border-red-500" : "border-gray-200"
-                  }`}
-                />
-              </div>
-            </div>
+              {/* Phone Field */}
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <Phone className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                            {...field}
+                            type="tel"
+                            placeholder="Phone"
+                            className="pl-12 h-12 rounded-lg border-2 border-gray-200"
+                          />
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="w-full text-center">
-              <Button
-                type="submit"
-                className="h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-full font-medium px-8"
-              >
-                {isLoading ? "Updating..." : "Save Changes"}
-              </Button>
-            </div>
-          </form>
+              <div className="w-full text-center">
+                <Button
+                  type="submit"
+                  className="h-12 bg-gray-800 hover:bg-gray-700 text-white rounded-full font-medium px-8"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Updating..." : "Save Changes"}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
 
